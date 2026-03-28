@@ -3,119 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AKIMIA 16型膚質測驗</title>
+    <title>AKIMIA 33題全量膚質測驗</title>
     <style>
-        :root { --primary: #26a69a; --secondary: #546e7a; --bg: #fdfdfd; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #333; }
-        .card { background: white; width: 92%; max-width: 450px; border-radius: 24px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); box-sizing: border-box; }
-        .step-indicator { font-size: 0.8rem; color: var(--primary); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .progress-container { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 25px; }
-        .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: 0.5s ease; }
-        h2 { font-size: 1.3rem; margin-bottom: 25px; line-height: 1.4; min-height: 3.6rem; }
-        .option { display: block; width: 100%; margin-bottom: 12px; padding: 18px; border: 1px solid #eaeaea; border-radius: 16px; cursor: pointer; transition: all 0.2s; font-size: 1rem; text-align: left; background: #fff; }
-        .option:active { background: #f0fdfa; border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(38, 166, 154, 0.15); }
+        :root { --primary: #26a69a; --bg: #f7f9f9; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; min-height: 100vh; }
+        .card { background: white; width: 100%; max-width: 500px; min-height: 100vh; padding: 25px; box-sizing: border-box; display: flex; flex-direction: column; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--primary); font-weight: bold; margin-bottom: 5px; }
+        .bar-bg { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+        .step-tag { font-size: 0.7rem; background: #e0f2f1; color: var(--primary); padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 15px; }
+        h2 { font-size: 1.1rem; line-height: 1.4; margin: 0 0 20px 0; color: #333; }
+        .option { display: block; width: 100%; margin-bottom: 10px; padding: 14px; border: 1px solid #eee; border-radius: 10px; cursor: pointer; text-align: left; font-size: 0.9rem; background: #fff; transition: 0.2s; box-sizing: border-box; }
+        .option:active { background: #f0fdfa; border-color: var(--primary); }
         .hidden { display: none; }
-        .result-code { font-size: 3rem; font-weight: 900; color: var(--primary); margin: 10px 0; letter-spacing: 4px; }
-        .tag-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tag { background: #e0f2f1; color: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-        .desc-box { text-align: left; background: #f8f9fa; padding: 20px; border-radius: 16px; line-height: 1.7; font-size: 0.95rem; }
-        .btn-reset { margin-top: 25px; width: 100%; padding: 15px; border: none; background: var(--primary); color: white; border-radius: 12px; font-size: 1rem; font-weight: bold; }
+        .result-code { font-size: 3rem; font-weight: 900; color: var(--primary); text-align: center; margin: 20px 0; letter-spacing: 5px; }
+        .analysis-box { background: #f9f9f9; padding: 20px; border-radius: 15px; font-size: 0.9rem; line-height: 1.7; border-top: 4px solid var(--primary); }
+        .btn-retry { width: 100%; padding: 15px; border: none; background: var(--primary); color: white; border-radius: 10px; font-size: 1rem; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="card" id="quiz-container">
-    <div class="step-indicator" id="step-label">STEP 1 / 4</div>
-    <div class="progress-container"><div class="progress-bar" id="progress"></div></div>
-    <h2 id="question">正在載入問題...</h2>
-    <div id="options"></div>
+<div id="quiz-screen" class="card">
+    <div class="progress-header"><span id="step-name">STEP 1</span><span id="progress-text">1/33</span></div>
+    <div class="bar-bg"><div class="bar-fill" id="bar"></div></div>
+    <div class="step-tag" id="cat-label">油性 vs 乾性</div>
+    <h2 id="q-text">載入中...</h2>
+    <div id="options-box"></div>
 </div>
 
-<div class="card hidden" id="result-container">
-    <p style="margin:0; color: #888;">你的專屬膚質代碼</p>
-    <div class="result-code" id="final-code"></div>
-    <div class="tag-container" id="tags"></div>
-    <div class="desc-box" id="result-desc"></div>
-    <button class="btn-reset" onclick="location.reload()">重新檢測</button>
+<div id="result-screen" class="card hidden">
+    <p style="text-align:center; color:#888; margin:0;">你的 16 型膚質代碼</p>
+    <div class="result-code" id="final-code">----</div>
+    <div class="analysis-box" id="analysis-content"></div>
+    <button class="btn-retry" onclick="location.reload()">重新測試</button>
 </div>
 
 <script>
-    // 每個 Step 的二選一結果
-    const questions = [
-        { step: 1, q: "你的出油頻率與毛孔狀況？", options: [
-            { text: "經常油光滿面、毛孔粗大 (O)", val: "O" },
-            { text: "皮膚乾燥緊繃、毛孔細小 (D)", val: "D" }
-        ]},
-        { step: 2, q: "皮膚受刺激時（如換季或酒精）的反應？", options: [
-            { text: "容易泛紅、發癢或刺痛 (S)", val: "S" },
-            { text: "皮膚健康，很少有過敏現象 (R)", val: "R" }
-        ]},
-        { step: 3, q: "你的膚色均勻度與斑點狀況？", options: [
-            { text: "容易留下痘印或有色斑沉澱 (P)", val: "P" },
-            { text: "膚色較均勻，不易長斑 (N)", val: "N" }
-        ]},
-        { step: 4, q: "觀察眼周與額頭的紋路表現？", options: [
-            { text: "已有細紋或皮膚容易鬆弛 (W)", val: "W" },
-            { text: "皮膚緊緻、富有彈性 (T)", val: "T" }
-        ]}
-    ];
+const questions = [
+    // --- Step 1: O/D (11題) ---
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"洗臉後不抹保養品，兩小時後觀察臉部：", o:[{t:"A. 乾燥、甚至有脫屑", v:1},{t:"B. 沒有油光", v:2},{t:"C. 鼻頭與額頭有泛油", v:3},{t:"D. 全臉都有油光", v:4}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"化妝後（若不化妝請選E），你的妝容通常：", o:[{t:"A. 容易浮粉起屑", v:1},{t:"B. 維持尚可", v:2},{t:"C. 下午就因出油脫妝", v:3},{t:"D. 嚴重脫妝且油膩", v:4},{t:"E. 我不化妝", v:2.5}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"平時不擦保濕產品，皮膚感覺：", o:[{t:"A. 非常緊繃", v:1},{t:"B. 有點緊繃", v:2},{t:"C. 舒適不緊繃", v:3},{t:"D. 完全沒感覺", v:4}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"你的毛孔大小與分布？", o:[{t:"A. 幾乎看不見", v:1},{t:"B. 局部(如鼻頭)稍微明顯", v:2},{t:"C. 全臉毛孔明顯", v:3},{t:"D. 毛孔粗大且數量多", v:4}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"照片中你的臉看起來？", o:[{t:"A. 暗沉無光", v:1},{t:"B. 正常光澤", v:2},{t:"C. T字部位反光", v:3},{t:"D. 全臉反光", v:4}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"使用吸油面紙時（若不使用請選E）：", o:[{t:"A. 吸不到油", v:1},{t:"B. 只有一點點", v:2},{t:"C. 很快吸滿一張", v:3},{t:"D. 要用兩張以上", v:4},{t:"E. 我不使用", v:2.5}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"觸摸皮膚時的感覺：", o:[{t:"A. 粗糙乾澀", v:1},{t:"B. 平滑柔軟", v:2},{t:"C. 黏膩感", v:3},{t:"D. 滿手油脂", v:4}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"你的臉部出油頻率？", o:[{t:"A. 很少出油", v:1},{t:"B. T字部位出油", v:2},{t:"C. 整天出油但尚可", v:3},{t:"D. 整天油光滿面", v:4}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"早上起床時，你的臉部：", o:[{t:"A. 乾乾的", v:1},{t:"B. 剛剛好", v:2},{t:"C. 稍微有油", v:3},{t:"D. 很油", v:4}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"使用保濕乳霜後：", o:[{t:"A. 很快吸收", v:1},{t:"B. 感覺舒服", v:2},{t:"C. 覺得有點油", v:3},{t:"D. 覺得非常悶厚", v:4}]},
+    { c:"OD", l:"Step 1: 油性 vs 乾性", q:"你的黑頭粉刺狀況：", o:[{t:"A. 沒有", v:1},{t:"B. 很少", v:2},{t:"C. 集中在鼻子", v:3},{t:"D. 全臉都有", v:4}]},
 
-    let currentStep = 0;
-    let userResult = "";
+    // --- Step 2: SR (8題) ---
+    { c:"SR", l:"Step 2: 敏感 vs 耐受", q:"使用一般護膚品時，皮膚發紅刺痛感？", o:[{t:"A. 從不", v:1},{t:"B. 很少", v:2},{t:"C. 偶爾", v:3},{t:"D. 經常", v:4}]},
+    { c:"SR", l:"Step 2: 敏感 vs 耐受", q:"皮膚是否容易出現紅血絲？", o:[{t:"A. 沒有", v:1},{t:"B. 很少", v:2},{t:"C. 有一些", v:3},{t:"D. 非常多", v:4}]},
+    { c:"SR", l:"Step 2: 敏感 vs 耐受", q:"臉部容易因運動、情緒而變紅嗎？", o:[{t:"A. 從不", v:1},{t:"B. 有時", v:2},{t:"C. 經常", v:3},{t:"D. 總是", v:4}]},
+    { c:"SR", l:"Step 2: 敏感 vs 耐受", q:"進出溫差大的環境時：", o:[{t:"A. 沒感覺", v:1},{t:"B. 輕微發熱", v:2},{t:"C. 明顯泛紅", v:3},{t:"D. 刺痛紅腫", v:4}]},
+    { c:"SR", l:"Step 2: 敏感 vs 耐受", q:"你的皮膚容易癢嗎？", o:[{t:"A. 從不", v:1},{t:"B. 很少", v:2},{t:"C. 經常", v:3},{t:"D. 總是", v:4}]},
+    { c:"SR", l:"Step 2: 敏感 vs 耐受", q:"洗澡水較熱時，臉會變紅嗎？", o:[{t:"A. 從不", v:1},{t:"B. 輕微", v:2},{t:"C. 明顯", v:3},{t:"D. 灼熱感", v:4}]},
+    { c:"SR", l:"Step 2: 敏感 vs 耐受", q:"曾被診斷過過敏性皮膚炎或酒糟嗎？", o:[{t:"A. 從未", v:1},{t:"B. 疑似有過", v:2},{t:"C. 有過症狀", v:3},{t:"D. 是且嚴重", v:4}]},
+    { c:"SR", l:"Step 2: 敏感 vs 耐受", q:"曬完太陽後皮膚：", o:[{t:"A. 沒反應", v:1},{t:"B. 變紅很快消退", v:2},{t:"C. 灼熱刺痛", v:3},{t:"D. 脫皮紅腫", v:4}]},
 
-    function render() {
-        if (currentStep >= questions.length) return showResult();
+    // --- Step 3: PN (7題) ---
+    { c:"PN", l:"Step 3: 色素 vs 非色素", q:"長完痘痘後留下的暗沉痕跡：", o:[{t:"A. 很快消失", v:1},{t:"B. 一個月內", v:2},{t:"C. 三個月", v:3},{t:"D. 半年以上", v:4},{t:"E. 不長痘", v:2.5}]},
+    { c:"PN", l:"Step 3: 色素 vs 非色素", q:"是否有明顯的曬斑或雀斑？", o:[{t:"A. 沒有", v:1},{t:"B. 很少", v:2},{t:"C. 有一些", v:3},{t:"D. 很多", v:4}]},
+    { c:"PN", l:"Step 3: 色素 vs 非色素", q:"曬太陽後斑點會變深嗎？", o:[{t:"A. 不曬太陽", v:1},{t:"B. 沒差別", v:2},{t:"C. 稍微", v:3},{t:"D. 明顯", v:4}]},
+    { c:"PN", l:"Step 3: 色素 vs 非色素", q:"膚色是否顯得蠟黃或暗沉？", o:[{t:"A. 很有光澤", v:1},{t:"B. 偶爾", v:2},{t:"C. 經常", v:3},{t:"D. 總是", v:4}]},
+    { c:"PN", l:"Step 3: 色素 vs 非色素", q:"嘴唇周圍或眼周有色素沉澱嗎？", o:[{t:"A. 沒有", v:1},{t:"B. 輕微", v:2},{t:"C. 有點明顯", v:3},{t:"D. 很明顯", v:4}]},
+    { c:"PN", l:"Step 3: 色素 vs 非色素", q:"受傷後的疤痕顏色：", o:[{t:"A. 正常膚色", v:1},{t:"B. 淺褐色", v:2},{t:"C. 深褐色", v:3},{t:"D. 黑色", v:4}]},
+    { c:"PN", l:"Step 3: 色素 vs 非色素", q:"使用美白產品的頻率？", o:[{t:"A. 從不", v:1},{t:"B. 偶爾", v:2},{t:"C. 經常", v:3},{t:"D. 每天", v:4}]},
 
-        const data = questions[currentStep];
-        document.getElementById('step-label').innerText = `STEP ${currentStep + 1} / 4`;
-        document.getElementById('progress').style.width = ((currentStep) / 4) * 100 + "%";
-        document.getElementById('question').innerText = data.q;
-        
-        const optDiv = document.getElementById('options');
-        optDiv.innerHTML = "";
-        
-        data.options.forEach(opt => {
-            const btn = document.createElement('div');
-            btn.className = "option";
-            btn.innerText = opt.text;
-            btn.onclick = () => {
-                userResult += opt.val;
-                currentStep++;
-                render();
-            };
-            optDiv.appendChild(btn);
-        });
-    }
+    // --- Step 4: WT (7題) ---
+    { c:"WT", l:"Step 4: 皺紋 vs 緊緻", q:"不做表情時是否有細紋？", o:[{t:"A. 沒有", v:1},{t:"B. 隱約", v:2},{t:"C. 部分明顯", v:3},{t:"D. 明顯可見", v:4}]},
+    { c:"WT", l:"Step 4: 皺紋 vs 緊緻", q:"你的防曬習慣？", o:[{t:"A. 嚴格", v:1},{t:"B. 每天", v:2},{t:"C. 偶爾", v:3},{t:"D. 從不", v:4}]},
+    { c:"WT", l:"Step 4: 皺紋 vs 緊緻", q:"飲食偏向高糖或高油嗎？", o:[{t:"A. 很清淡", v:1},{t:"B. 一般", v:2},{t:"C. 偏重口味", v:3},{t:"D. 非常高糖", v:4}]},
+    { c:"WT", l:"Step 4: 皺紋 vs 緊緻", q:"你的生活壓力大嗎？", o:[{t:"A. 很輕鬆", v:1},{t:"B. 適中", v:2},{t:"C. 頗大", v:3},{t:"D. 長期極大", v:4}]},
+    { c:"WT", l:"Step 4: 皺紋 vs 緊緻", q:"是否經常熬夜或睡眠不足？", o:[{t:"A. 從不", v:1},{t:"B. 偶爾", v:2},{t:"C. 經常", v:3},{t:"D. 每天", v:4}]},
+    { c:"WT", l:"Step 4: 皺紋 vs 緊緻", q:"家族長輩皮膚狀態：", o:[{t:"A. 顯年輕", v:1},{t:"B. 正常", v:2},{t:"C. 顯老", v:3},{t:"D. 皺紋極多", v:4}]},
+    { c:"WT", l:"Step 4: 皺紋 vs 緊緻", q:"皮膚彈性與緊緻度：", o:[{t:"A. 很緊實", v:1},{t:"B. 一般", v:2},{t:"C. 有點鬆", v:3},{t:"D. 鬆弛下垂", v:4}]}
+];
 
-    function showResult() {
-        document.getElementById('quiz-container').classList.add('hidden');
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('final-code').innerText = userResult;
+let cur = 0;
+let userScores = { "OD":0, "SR":0, "PN":0, "WT":0 };
+let qCounts = { "OD":0, "SR":0, "PN":0, "WT":0 };
 
-        // 簡單的標籤對應邏析
-        const labels = { 
-            'O':'油性', 'D':'乾性', 'S':'敏感', 'R':'耐受', 
-            'P':'色素', 'N':'非色素', 'W':'皺紋', 'T':'緊緻' 
-        };
-        
-        const tagContainer = document.getElementById('tags');
-        userResult.split('').forEach(char => {
-            const span = document.createElement('span');
-            span.className = 'tag';
-            span.innerText = labels[char];
-            tagContainer.appendChild(span);
-        });
+function render() {
+    if (cur >= questions.length) return showResult();
+    const q = questions[cur];
+    document.getElementById('bar').style.width = (cur / questions.length) * 100 + "%";
+    document.getElementById('progress-text').innerText = `${cur+1}/33`;
+    document.getElementById('step-name').innerText = `STEP ${Math.floor(cur/8)+1}`;
+    document.getElementById('cat-label').innerText = q.l;
+    document.getElementById('q-text').innerText = q.q;
+    
+    const box = document.getElementById('options-box');
+    box.innerHTML = "";
+    q.o.forEach(opt => {
+        const b = document.createElement('div');
+        b.className = "option";
+        b.innerText = opt.t;
+        b.onclick = () => { userScores[q.c]+=opt.v; qCounts[q.c]++; cur++; render(); };
+        box.appendChild(b);
+    });
+}
 
-        // 簡單分析內容 (這裡可以根據 16 種組合細化)
-        document.getElementById('result-desc').innerHTML = `
-            <strong>分析報告：</strong><br>
-            你的膚質屬於「${userResult}」。這意味著你在保養上需要特別注意水油平衡與防禦。<br><br>
-            由於你即將前往韓國，這類型的肌膚在乾燥環境下可能會有特定反應。建議選用 AKIMIA 針對 ${userResult.includes('S') ? '敏感肌' : '一般肌'} 設計的微電流面膜。
-        `;
-    }
-
-    render();
+function showResult() {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    const getChar = (cat, c1, c2) => (userScores[cat]/qCounts[cat] > 2.5) ? c1 : c2;
+    const final = [getChar("OD","O","D"), getChar("SR","S","R"), getChar("PN","P","N"), getChar("WT","W","T")].join('');
+    document.getElementById('final-code').innerText = final;
+    
+    const mapping = {
+        "O":"油性：分泌旺盛，著重代謝。","D":"乾性：屏障脆弱，著重鎖水。",
+        "S":"敏感：易受刺激，著重鎮靜。","R":"耐受：防禦力強，適合高效保養。",
+        "P":"色素：易生斑點，著重防曬。","N":"非色素：膚色穩定，維持亮澤。",
+        "W":"皺紋：易生紋路，著重抗氧。","T":"緊緻：狀態良好，著重防護。"
+    };
+    let html = "<ul>";
+    final.split('').forEach(c => html += `<li>${mapping[c]}</li>`);
+    html += "</ul>";
+    document.getElementById('analysis-content').innerHTML = html;
+}
+render();
 </script>
-
 </body>
 </html>
