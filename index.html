@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKIMIA 膚質測試</title>
+    <style>
+        body { font-family: sans-serif; background: #f9f9f9; display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .option { display: block; width: 100%; margin: 10px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .option:active { background: #e0f2f1; border-color: #26a69a; }
+        .hidden { display: none; }
+        .progress { height: 5px; background: #eee; margin-bottom: 20px; }
+        .progress-bar { height: 100%; background: #26a69a; width: 0%; transition: 0.5s; }
+    </style>
+</head>
+<body>
+
+<div class="card" id="quiz-container">
+    <div class="progress"><div class="progress-bar" id="progress"></div></div>
+    <h2 id="question">載入中...</h2>
+    <div id="options"></div>
+</div>
+
+<div class="card hidden" id="result-container">
+    <h2>你的膚質是：</h2>
+    <h1 id="skin-type" style="color: #26a69a;"></h1>
+    <p id="description"></p>
+    <button onclick="location.reload()" style="padding: 10px 20px;">重新測試</button>
+</div>
+
+<script>
+    const questions = [
+        { q: "早上起床時，臉部的出油狀況？", options: {A:"全臉明顯油光", B:"T字出油兩頰乾", C:"不油也不乾", D:"緊繃起屑"} },
+        { q: "洗完臉 15 分鐘後的感覺？", options: {A:"很快就出油", B:"兩頰明顯緊繃", C:"微微緊繃", D:"刺痛泛紅"} }
+        // ...以此類推添加更多題目
+    ];
+
+    let currentStep = 0;
+    let scores = { A:0, B:0, C:0, D:0 };
+
+    function showQuestion() {
+        if (currentStep >= questions.length) return showResult();
+        
+        const qData = questions[currentStep];
+        document.getElementById('question').innerText = qData.q;
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        
+        for (let key in qData.options) {
+            let btn = document.createElement('div');
+            btn.className = 'option';
+            btn.innerText = qData.options[key];
+            btn.onclick = () => { scores[key]++; currentStep++; updateProgress(); showQuestion(); };
+            optionsDiv.appendChild(btn);
+        }
+    }
+
+    function updateProgress() {
+        document.getElementById('progress').style.width = (currentStep / questions.length) * 100 + '%';
+    }
+
+    function showResult() {
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('result-container').classList.remove('hidden');
+        
+        // 找出得分最高的代號
+        const topType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+        const results = {
+            A: "油性肌膚 - 建議使用清爽控油系列",
+            B: "混合性肌膚 - 建議分區精準保養",
+            C: "中性肌膚 - 維持現狀保濕即可",
+            D: "乾性肌膚 - 需要強效補水與滋養"
+        };
+        document.getElementById('skin-type').innerText = topType;
+        document.getElementById('description').innerText = results[topType];
+    }
+
+    showQuestion();
+</script>
+
+</body>
+</html>
 
