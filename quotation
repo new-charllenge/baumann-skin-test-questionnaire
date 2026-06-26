@@ -1,1 +1,41 @@
+            <td class="col-details">
+                <div class="detail-section">
+                    <strong>Deliverables include:</strong><br>
+                    1. 交期少於 7 天加急排班（預計 2026/07/02 左右交檔）<br>
+                </div>
+                <div class="detail-section">
+                    <span class="detail-label">Delivery Date:</span>
+                    <span class="detail-val">2026/07/02 或之前</span>
+                </div>
+            </td>
+            <td class="col-total">$500</td>
+        </tr>
+    </tbody>
+</table>
 
+<div class="bottom-container">
+    <div class="bottom-left">
+        <div class="section-heading">Payment Method</div>
+        <div class="pay-method-block">
+            <strong>FPS (轉數快)</strong><br>
+            FPS No.: 2179232<br>
+            Phone No.: 60891202<br>
+            Name: C L
+        </div>
+        <div class="pay-method-block">
+            <strong>Bank Transfer</strong><br>
+            Acc. No.: 400 885000 292<br>
+            Bank: HSBC<br>
+            Name of Holder: LI T** C****
+        </div>
+        
+        <div class="section-heading" style="margin-top: 15px;">Notes</div>
+        <ol class="notes-list">
+            <li>Deposit shall be settled within 2 days after signing-off to secure the rush schedule.</li>
+            <li>Once deposit is received, work will commence immediately to meet the 7/2 delivery date.</li>
+            <li>Remaining balance must be issued before the final high-res files can be released.</li>
+            <li>最終交付為符合官方要求之 CMYK 高解析度 PNG/JPG 印刷檔，不包含可編輯之 .AI/.PSD 原始分層檔案。</li>
+        </ol>
+    </div>
+    
+    <div class="bottom-right">
